@@ -29,6 +29,7 @@ class Group{
       gColor: map['gColor'] as String,
     );
   }
+
   Group({
     this.id,
     required this.name, 

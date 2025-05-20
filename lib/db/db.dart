@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class Dbhelper {
-  static final db = Dbhelper._init();
+  static final Dbhelper init = Dbhelper._init();
   static Database? _database;
 
   Dbhelper._init();
@@ -21,13 +21,13 @@ class Dbhelper {
         await db.execute("""
           CREATE TABLE IF NOT EXISTS "groups" (
             "id" INTEGER NOT NULL UNIQUE,
-            "title" TEXT NOT NULL,
+            "title" TEXT NOT NULL UNIQUE,
             "gColor" TEXT DEFAULT '#7C586B',
-            PRIMARY KEY("id")
+            PRIMARY KEY("id" AUTOINCREMENT)
           );
 
           CREATE TABLE IF NOT EXISTS "tasks" (
-            "id" INTEGER NOT NULL UNIQUE,
+            "id" INTEGER NOT NULL UNIQUE ,
             "group_ID" INTEGER,
             "title" TEXT NOT NULL,
             "info" TEXT,
@@ -35,7 +35,7 @@ class Dbhelper {
             "doneAt" INTEGER,
             "enddateAt" INTEGER,
             "updateAt" INTEGER NOT NULL,
-            PRIMARY KEY("id"),
+            PRIMARY KEY("id" AUTOINCREMENT),
             FOREIGN KEY ("group_ID") REFERENCES "groups"("id")
             ON UPDATE NO ACTION ON DELETE NO ACTION
           );
@@ -43,10 +43,10 @@ class Dbhelper {
 
 
           CREATE TABLE IF NOT EXISTS "tags" (
-            "id" INTEGER NOT NULL UNIQUE,
+            "id" INTEGER NOT NULL UNIQUE AUTOINCREMENT,
             "name" TEXT,
             "color" TEXT,
-            PRIMARY KEY("id")
+            PRIMARY KEY("id" AUTOINCREMENT)
           );
 
           CREATE TABLE IF NOT EXISTS "tasks_tags_foregin" (
@@ -58,6 +58,9 @@ class Dbhelper {
             ON UPDATE NO ACTION ON DELETE NO ACTION
           );
         """);
+        await db.rawInsert('''
+          INSERT INTO groups(title) VALUES("預設群組")
+          ''');
       }
     );
 
